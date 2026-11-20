@@ -1,0 +1,6 @@
+{
+  "name": "SmartPocket",
+  "description": "Student-focused personal finance and automated budgeting app for tracking daily UPI expenses, managing monthly allowances, building savings habits, and sharing verified user reviews.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

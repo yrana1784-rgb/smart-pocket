@@ -1,0 +1,489 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private student or young professional account profile and monthly budgeting preferences.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the user."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Display name of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 150,
+          "description": "Verified email address (PII, strictly owner-only)."
+        },
+        "persona": {
+          "type": "string",
+          "enum": [
+            "College Student",
+            "MBA Student",
+            "Fresh Graduate",
+            "Young Professional"
+          ],
+          "description": "User segment from the SmartPocket venture plan."
+        },
+        "campusOrCity": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100,
+          "description": "College, university, or city (e.g., DBS Global University, Meerut)."
+        },
+        "monthlyAllowance": {
+          "type": "number",
+          "description": "Monthly allowance or income in INR (0 to 10000000)."
+        },
+        "monthlySavingsTarget": {
+          "type": "number",
+          "description": "Target monthly savings in INR (0 to 10000000)."
+        },
+        "plan": {
+          "type": "string",
+          "enum": ["free", "trial", "plus"],
+          "description": "Subscription tier: Free Basic, 30-Day Early-Access Trial, or SmartPocket Plus (INR 99/mo)."
+        },
+        "trialStartedAt": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 40,
+          "description": "ISO date string when early-access trial started, or empty string."
+        },
+        "referralCode": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 24,
+          "pattern": "^[A-Z0-9\\-]+$",
+          "description": "Automated campus referral code for student outreach."
+        },
+        "willingnessToPay99": {
+          "type": "string",
+          "enum": ["undecided", "yes", "maybe", "no"],
+          "description": "User pricing feedback on the INR 99/month SmartPocket Plus plan."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest profile update."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "email",
+        "persona",
+        "campusOrCity",
+        "monthlyAllowance",
+        "monthlySavingsTarget",
+        "plan",
+        "trialStartedAt",
+        "referralCode",
+        "willingnessToPay99",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A daily student expense transaction logged via UPI, Cash, Card, or Bank Transfer.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner UID."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Short expense description or merchant name."
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount spent in INR (> 0 and <= 10000000)."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Food & Canteen",
+            "Travel & Commute",
+            "Shopping",
+            "Outings & Fun",
+            "Books & Study",
+            "Bills & Recharge",
+            "Other"
+          ],
+          "description": "Student spending category."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["UPI", "Cash", "Card", "Bank Transfer"],
+          "description": "Payment mode used."
+        },
+        "date": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Expense date in YYYY-MM-DD format."
+        },
+        "monthKey": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$",
+          "description": "Month key in YYYY-MM format."
+        },
+        "note": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 240,
+          "description": "Optional transaction note."
+        },
+        "isRecurringInstance": {
+          "type": "boolean",
+          "description": "True if generated automatically from a recurring expense rule."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "amount",
+        "category",
+        "paymentMethod",
+        "date",
+        "monthKey",
+        "note",
+        "isRecurringInstance",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CategoryBudget": {
+      "title": "CategoryBudget",
+      "description": "Monthly category spending cap and automated alert threshold.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner UID."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Food & Canteen",
+            "Travel & Commute",
+            "Shopping",
+            "Outings & Fun",
+            "Books & Study",
+            "Bills & Recharge",
+            "Other"
+          ],
+          "description": "Budgeted spending category."
+        },
+        "monthKey": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$",
+          "description": "Month key in YYYY-MM format."
+        },
+        "monthlyLimit": {
+          "type": "number",
+          "description": "Monthly spending cap in INR (> 0 and <= 10000000)."
+        },
+        "alertThresholdPct": {
+          "type": "number",
+          "description": "Percentage threshold (50 to 100) to trigger a budget warning."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "category",
+        "monthKey",
+        "monthlyLimit",
+        "alertThresholdPct",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SavingsGoal": {
+      "title": "SavingsGoal",
+      "description": "Personal savings milestone with terminal completion state.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner UID."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Goal name."
+        },
+        "targetAmount": {
+          "type": "number",
+          "description": "Target savings amount in INR (> 0 and <= 10000000)."
+        },
+        "savedAmount": {
+          "type": "number",
+          "description": "Current amount saved in INR (0 to 10000000)."
+        },
+        "targetDate": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Target completion date in YYYY-MM-DD."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "completed"],
+          "description": "Goal lifecycle status; completed is terminal."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "name",
+        "targetAmount",
+        "savedAmount",
+        "targetDate",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RecurringBill": {
+      "title": "RecurringBill",
+      "description": "Automated recurring student bill rule (e.g., Hostel Mess, Wi-Fi, Mobile Recharge).",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner UID."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Recurring bill title."
+        },
+        "amount": {
+          "type": "number",
+          "description": "Recurring amount in INR (> 0 and <= 10000000)."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Food & Canteen",
+            "Travel & Commute",
+            "Shopping",
+            "Outings & Fun",
+            "Books & Study",
+            "Bills & Recharge",
+            "Other"
+          ],
+          "description": "Spending category."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["UPI", "Cash", "Card", "Bank Transfer"],
+          "description": "Default payment mode."
+        },
+        "dayOfMonth": {
+          "type": "number",
+          "description": "Day of month (1 to 28) when bill recurs."
+        },
+        "lastAppliedMonth": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 7,
+          "description": "YYYY-MM string of the last month auto-posted, or empty string."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether this automation rule is active."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "amount",
+        "category",
+        "paymentMethod",
+        "dayOfMonth",
+        "lastAppliedMonth",
+        "active",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "VerifiedReview": {
+      "title": "VerifiedReview",
+      "description": "Public verified user rating and review (strictly PII-free; authored only by email-verified SmartPocket users).",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Author UID (matches document ID)."
+        },
+        "authorName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Public display name of the verified reviewer."
+        },
+        "authorRole": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Public persona and city/campus tag (e.g., MBA Student · Meerut)."
+        },
+        "rating": {
+          "type": "number",
+          "description": "Integer star rating from 1 to 5."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 100,
+          "description": "Short review headline."
+        },
+        "comment": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 600,
+          "description": "Detailed review body."
+        },
+        "verifiedEmail": {
+          "type": "boolean",
+          "description": "Always true; enforced by request.auth.token.email_verified == true in Firestore rules."
+        },
+        "isPublished": {
+          "type": "boolean",
+          "description": "Visibility flag enforced by list/get rules."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of review creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last edit."
+        }
+      },
+      "required": [
+        "userId",
+        "authorName",
+        "authorRole",
+        "rating",
+        "title",
+        "comment",
+        "verifiedEmail",
+        "isPublished",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user account profile containing PII (email) and budgeting preferences. Strictly owner-only."
+    },
+    "/users/{userId}/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "User's private daily expense ledger."
+    },
+    "/users/{userId}/budgets/{budgetId}": {
+      "schema": { "$ref": "#/entities/CategoryBudget" },
+      "description": "User's monthly category budget limits and alert thresholds."
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": { "$ref": "#/entities/SavingsGoal" },
+      "description": "User's personal savings goals with terminal completion state."
+    },
+    "/users/{userId}/recurring/{recurringId}": {
+      "schema": { "$ref": "#/entities/RecurringBill" },
+      "description": "User's automated recurring monthly bill rules."
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/VerifiedReview" },
+      "description": "Public PII-free verified user ratings and reviews (1 document per verified user, keyed by UID)."
+    }
+  }
+}
